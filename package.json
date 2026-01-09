@@ -1,9 +1,9 @@
 {
   "name": "p7d-markdown-it-linebreak",
-  "displayName":"p7d-markdown-it-linebreak",
-  "description": "Adjust handling of line breaks in markdown preview html.",
+  "displayName": "p7d-markdown-it-linebreak-and-strong-ja",
+  "description": "Adjust handling of line breaks and em/strong asterisk mark in japanese markdown preview html.",
   "license": "MIT",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "publisher": "peaceroad",
   "repository": {
     "url": "https://github.com/peaceroad/vsce-p7d-markdown-it-linebreak"
@@ -20,12 +20,81 @@
       "supported": true
     }
   },
+  "type": "module",
+  "scripts": {
+    "build": "node build.js"
+  },
   "activationEvents": [],
-  "main": "./extension.js",
+  "main": "./dist/extension.js",
   "contributes": {
-    "markdown.markdownItPlugins": true
+    "markdown.markdownItPlugins": true,
+    "configuration": {
+      "title": "p7d-markdown-it-Linebreak-and-strong-ja",
+      "properties": {
+        "p7dMarkdownItLinebreak.cjkBreaks.disable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable markdown-it-cjk-breaks-mod entirely."
+        },
+        "p7dMarkdownItLinebreak.cjkBreaks.disableEither": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable either-side suppression (use original markdown-it-cjk-breaks behavior)."
+        },
+        "p7dMarkdownItLinebreak.cjkBreaks.disableNormalizeSoftBreaks": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable softbreak normalization for other plugins."
+        },
+        "p7dMarkdownItLinebreak.cjkBreaks.spaceAfterPunctuation": {
+          "type": "string",
+          "enum": [
+            "half",
+            "full",
+            "none"
+          ],
+          "default": "half",
+          "description": "Insert space when suppressing line breaks after punctuation; use 'none' to disable."
+        },
+        "p7dMarkdownItLinebreak.cjkBreaks.spaceAfterPunctuationTargetsAdd": {
+          "type": "string",
+          "default": "",
+          "description": "Additional punctuation triggers to append (comma-separated)."
+        },
+        "p7dMarkdownItLinebreak.cjkBreaks.spaceAfterPunctuationTargetsRemove": {
+          "type": "string",
+          "default": "",
+          "description": "Punctuation triggers to remove from the resolved list (comma-separated)."
+        },
+        "p7dMarkdownItLinebreak.attrs.disable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable markdown-it-attrs auto-registration."
+        },
+        "p7dMarkdownItLinebreak.strongJa.disable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable markdown-it-strong-ja entirely."
+        },
+        "p7dMarkdownItLinebreak.strongJa.disableDollarMath": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable inline $...$ handling inside strong/em processing."
+        },
+        "p7dMarkdownItLinebreak.strongJa.disallowMixed": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable mixed English emphasis when links, HTML, code, or math appear (set true to match markdown-it behavior)."
+        }
+      }
+    }
   },
   "dependencies": {
-    "@sup39/markdown-it-cjk-breaks": "^1.2.0"
+    "@peaceroad/markdown-it-cjk-breaks-mod": "^0.1.4",
+    "@peaceroad/markdown-it-strong-ja": "^0.5.5",
+    "markdown-it-attrs": "^4.3.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.2"
   }
 }
