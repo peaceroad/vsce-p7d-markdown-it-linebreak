@@ -27,12 +27,12 @@ const getDisableSetting = (config, key, fallback, legacyDisableKey, legacyEnable
   const explicit = getExplicitBoolean(config, key)
   if (explicit !== undefined) return explicit
   if (legacyDisableKey) {
-    const legacyDisable = getExplicitBoolean(config, legacyDisableKey)
-    if (legacyDisable !== undefined) return legacyDisable
+    const legacyDisable = config.get(legacyDisableKey)
+    if (typeof legacyDisable === 'boolean') return legacyDisable
   }
   if (legacyEnableKey) {
-    const legacyEnable = getExplicitBoolean(config, legacyEnableKey)
-    if (legacyEnable !== undefined) return !legacyEnable
+    const legacyEnable = config.get(legacyEnableKey)
+    if (typeof legacyEnable === 'boolean') return !legacyEnable
   }
   const value = config.get(key)
   return typeof value === 'boolean' ? value : fallback
@@ -59,14 +59,7 @@ const hasCurlyAttributesRule = (md) => {
   return rules.some((rule) => rule.name === 'curly_attributes')
 }
 
-const ensureMarkdownItAttrs = (md, config) => {
-  const disableAttrs = getDisableSetting(
-    config,
-    'attrs.disable',
-    false,
-    'strongJa.disableMditAttrs',
-    'strongJa.mditAttrs'
-  )
+const ensureMarkdownItAttrs = (md, disableAttrs) => {
   if (disableAttrs) return
   if (hasCurlyAttributesRule(md)) return
   md.use(markdownItAttrs)
@@ -93,30 +86,30 @@ const buildCjkBreaksOptions = (config) => {
   }
 
   const spaceAfterPunctuation = config.get('cjkBreaks.spaceAfterPunctuation')
-  if (
+  const hasSpacing =
     typeof spaceAfterPunctuation === 'string' &&
     spaceAfterPunctuation.length > 0 &&
     spaceAfterPunctuation !== 'none'
-  ) {
+  if (hasSpacing) {
     options.spaceAfterPunctuation = spaceAfterPunctuation
-  }
 
-  const targetsAdd = config.get('cjkBreaks.spaceAfterPunctuationTargetsAdd')
-  const addList = normalizeStringList(targetsAdd)
-  if (addList && addList.length > 0) {
-    options.spaceAfterPunctuationTargetsAdd = addList
-  }
+    const targetsAdd = config.get('cjkBreaks.spaceAfterPunctuationTargetsAdd')
+    const addList = normalizeStringList(targetsAdd)
+    if (addList && addList.length > 0) {
+      options.spaceAfterPunctuationTargetsAdd = addList
+    }
 
-  const targetsRemove = config.get('cjkBreaks.spaceAfterPunctuationTargetsRemove')
-  const removeList = normalizeStringList(targetsRemove)
-  if (removeList && removeList.length > 0) {
-    options.spaceAfterPunctuationTargetsRemove = removeList
+    const targetsRemove = config.get('cjkBreaks.spaceAfterPunctuationTargetsRemove')
+    const removeList = normalizeStringList(targetsRemove)
+    if (removeList && removeList.length > 0) {
+      options.spaceAfterPunctuationTargetsRemove = removeList
+    }
   }
 
   return options
 }
 
-const buildStrongJaOptions = (config) => {
+const buildStrongJaOptions = (config, disableAttrs) => {
   const disableDollarMath = getDisableSetting(
     config,
     'strongJa.disableDollarMath',
@@ -124,16 +117,9 @@ const buildStrongJaOptions = (config) => {
     null,
     'strongJa.dollarMath'
   )
-  const disableMditAttrs = getDisableSetting(
-    config,
-    'attrs.disable',
-    false,
-    'strongJa.disableMditAttrs',
-    'strongJa.mditAttrs'
-  )
   const options = {
     dollarMath: !disableDollarMath,
-    mditAttrs: !disableMditAttrs,
+    mditAttrs: !disableAttrs,
     disallowMixed: getBoolean(config, 'strongJa.disallowMixed', false),
     coreRulesBeforePostprocess: STRONG_JA_CORE_RULES,
   }
@@ -145,14 +131,21 @@ export const activate = async (context) => {
   return {
     extendMarkdownIt(md) {
       const config = vscode.workspace.getConfiguration(CONFIG_SECTION)
-      const disableCjkBreaks = getDisableSetting(config, 'cjkBreaks.disable', false)
-      const disableStrongJa = getDisableSetting(config, 'strongJa.disable', false)
+      const disableCjkBreaks = getBoolean(config, 'cjkBreaks.disable', false)
+      const disableStrongJa = getBoolean(config, 'strongJa.disable', false)
+      const disableAttrs = getDisableSetting(
+        config,
+        'attrs.disable',
+        false,
+        'strongJa.disableMditAttrs',
+        'strongJa.mditAttrs'
+      )
       if (!disableCjkBreaks) {
         md.use(cjkBreaks, buildCjkBreaksOptions(config))
       }
       if (!disableStrongJa) {
-        ensureMarkdownItAttrs(md, config)
-        md.use(strongJa, buildStrongJaOptions(config))
+        ensureMarkdownItAttrs(md, disableAttrs)
+        md.use(strongJa, buildStrongJaOptions(config, disableAttrs))
       }
       return md
     }
