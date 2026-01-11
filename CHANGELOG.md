@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.1.1] - 2026-01-11
+
+- tuning extension.js
+
 ## [0.1.0] - 2026-01-09
 
 Breaking changes. Change extension display name, add support for strong-ja and attrs:
