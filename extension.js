@@ -1,7 +1,6 @@
 import * as vscode from 'vscode'
 import cjkBreaks from '@peaceroad/markdown-it-cjk-breaks-mod'
 import strongJa from '@peaceroad/markdown-it-strong-ja'
-import markdownItAttrs from 'markdown-it-attrs'
 
 const CONFIG_SECTION = 'p7dMarkdownItLinebreak'
 const STRONG_JA_CORE_RULES = ['cjk_breaks', 'my_custom_rule']
@@ -53,18 +52,6 @@ const normalizeStringList = (value) => {
   return list
 }
 
-const hasCurlyAttributesRule = (md) => {
-  const rules = md?.core?.ruler?.__rules__
-  if (!Array.isArray(rules)) return false
-  return rules.some((rule) => rule.name === 'curly_attributes')
-}
-
-const ensureMarkdownItAttrs = (md, disableAttrs) => {
-  if (disableAttrs) return
-  if (hasCurlyAttributesRule(md)) return
-  md.use(markdownItAttrs)
-}
-
 const buildCjkBreaksOptions = (config) => {
   const disableEither = getDisableSetting(
     config,
@@ -109,7 +96,7 @@ const buildCjkBreaksOptions = (config) => {
   return options
 }
 
-const buildStrongJaOptions = (config, disableAttrs) => {
+const buildStrongJaOptions = (config) => {
   const disableDollarMath = getDisableSetting(
     config,
     'strongJa.disableDollarMath',
@@ -119,7 +106,6 @@ const buildStrongJaOptions = (config, disableAttrs) => {
   )
   const options = {
     dollarMath: !disableDollarMath,
-    mditAttrs: !disableAttrs,
     disallowMixed: getBoolean(config, 'strongJa.disallowMixed', false),
     coreRulesBeforePostprocess: STRONG_JA_CORE_RULES,
   }
@@ -133,19 +119,11 @@ export const activate = async (context) => {
       const config = vscode.workspace.getConfiguration(CONFIG_SECTION)
       const disableCjkBreaks = getBoolean(config, 'cjkBreaks.disable', false)
       const disableStrongJa = getBoolean(config, 'strongJa.disable', false)
-      const disableAttrs = getDisableSetting(
-        config,
-        'attrs.disable',
-        false,
-        'strongJa.disableMditAttrs',
-        'strongJa.mditAttrs'
-      )
       if (!disableCjkBreaks) {
         md.use(cjkBreaks, buildCjkBreaksOptions(config))
       }
       if (!disableStrongJa) {
-        ensureMarkdownItAttrs(md, disableAttrs)
-        md.use(strongJa, buildStrongJaOptions(config, disableAttrs))
+        md.use(strongJa, buildStrongJaOptions(config))
       }
       return md
     }

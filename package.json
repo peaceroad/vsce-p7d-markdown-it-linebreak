@@ -3,7 +3,7 @@
   "displayName": "p7d-markdown-it-linebreak-and-strong-ja",
   "description": "Adjust handling of line breaks and em/strong asterisk mark in japanese markdown preview html.",
   "license": "MIT",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "peaceroad",
   "repository": {
     "url": "https://github.com/peaceroad/vsce-p7d-markdown-it-linebreak"
@@ -66,11 +66,6 @@
           "default": "",
           "description": "Punctuation triggers to remove from the resolved list (comma-separated)."
         },
-        "p7dMarkdownItLinebreak.attrs.disable": {
-          "type": "boolean",
-          "default": false,
-          "description": "Disable markdown-it-attrs auto-registration."
-        },
         "p7dMarkdownItLinebreak.strongJa.disable": {
           "type": "boolean",
           "default": false,
@@ -91,8 +86,7 @@
   },
   "dependencies": {
     "@peaceroad/markdown-it-cjk-breaks-mod": "^0.1.4",
-    "@peaceroad/markdown-it-strong-ja": "^0.5.5",
-    "markdown-it-attrs": "^4.3.1"
+    "@peaceroad/markdown-it-strong-ja": "^0.5.6"
   },
   "devDependencies": {
     "esbuild": "^0.27.2"
