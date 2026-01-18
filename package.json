@@ -86,7 +86,7 @@
   },
   "dependencies": {
     "@peaceroad/markdown-it-cjk-breaks-mod": "^0.1.4",
-    "@peaceroad/markdown-it-strong-ja": "^0.6.0"
+    "@peaceroad/markdown-it-strong-ja": "^0.6.1"
   },
   "devDependencies": {
     "esbuild": "^0.27.2"
