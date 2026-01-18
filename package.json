@@ -3,7 +3,7 @@
   "displayName": "p7d-markdown-it-linebreak-and-strong-ja",
   "description": "Adjust handling of line breaks and em/strong asterisk mark in japanese markdown preview html.",
   "license": "MIT",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "peaceroad",
   "repository": {
     "url": "https://github.com/peaceroad/vsce-p7d-markdown-it-linebreak"
