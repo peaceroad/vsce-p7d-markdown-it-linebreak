@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.2.1] - 2026-01-18
+
+Update p7d-markdown-it-strong-ja@0.6.1
+- Fix: 
+    - fix: trim trailing spaces only on terminal text tokens.
+
 ## [0.2.0] - 2026-01-18
 
 - Fix: 
