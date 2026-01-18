@@ -1,5 +1,19 @@
 # Change Log
 
+## [0.2.0] - 2026-01-18
+
+- Fix: 
+    - Fixed a bug where text would disappear when used in conjunction with other plugins because the highlighting process did not have a map.
+- Change:
+    - Last time, we added markdown-it-attrs if it wasn't already included. However, this seemed redundant, so we discontinued it.
+- Breaking Change
+    - For highlighting, we introduced the mode option described below. In conjunction with this, we changed the processing so that when a sentence containing a mixture of Japanese and English contains a combination of three or more asterisks, it is considered to be Japanese text, starting with the beginning. Also, for English paragraphs that do not contain Japanese, the output is now more similar to markdown-it.
+- Modify Options:
+- Add strong-ja mode setting (japanese-only/aggressive/compatible).
+    - Default strong-ja mode to japanese-only in configuration.
+- Remove strong-ja disableDollarMath setting (always use plugin default).
+- Remove strong-ja disallowMixed setting (always use plugin default).
+
 ## [0.1.1] - 2026-01-11
 
 - tuning extension.js

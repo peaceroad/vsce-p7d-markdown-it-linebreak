@@ -97,17 +97,16 @@ const buildCjkBreaksOptions = (config) => {
 }
 
 const buildStrongJaOptions = (config) => {
-  const disableDollarMath = getDisableSetting(
-    config,
-    'strongJa.disableDollarMath',
-    false,
-    null,
-    'strongJa.dollarMath'
-  )
   const options = {
-    dollarMath: !disableDollarMath,
-    disallowMixed: getBoolean(config, 'strongJa.disallowMixed', false),
     coreRulesBeforePostprocess: STRONG_JA_CORE_RULES,
+  }
+
+  const modeRaw = config.get('strongJa.mode', 'default')
+  if (typeof modeRaw === 'string') {
+    const mode = modeRaw.toLowerCase()
+    if (mode === 'aggressive' || mode === 'compatible') {
+      options.mode = mode
+    }
   }
 
   return options

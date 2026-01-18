@@ -6,9 +6,10 @@ Adjust handling of line breaks and emphasis parsing in VS Code Markdown preview.
 
 This extension bundles:
 
-- markdown-it-cjk-breaks-mod
-- markdown-it-strong-ja
-- markdown-it-attrs (auto-registered if another extension has not registered it)
+- [@peaceroad/markdown-it-cjk-breaks-mod](https://www.npmjs.com/package/@peaceroad/markdown-it-cjk-breaks-mod)
+- [@peaceroad/markdown-it-strong-ja](https://www.npmjs.com/package/@peaceroad/markdown-it-strong-ja)
+
+Note: For more details, see the npm package.
 
 ### Examples
 
@@ -40,7 +41,7 @@ strong-ja output (default):
 <p>string<strong><a href="url">text</a></strong></p>
 ```
 
-When `disallowMixed: true`, output keeps markdown-it behavior:
+When `mode: "compatible"`, output keeps markdown-it behavior:
 
 ```HTML
 <p>string**<a href="url">text</a>**</p>
@@ -106,10 +107,12 @@ To disable, set `p7dMarkdownItLinebreak.cjkBreaks.disableNormalizeSoftBreaks` to
 - `p7dMarkdownItLinebreak.cjkBreaks.spaceAfterPunctuation` (default: `"half"`) Insert `"half"` or `"full"` space after punctuation when a line break is suppressed; use `"none"` to disable.
 - `p7dMarkdownItLinebreak.cjkBreaks.spaceAfterPunctuationTargetsAdd` (default: `""`) Additional punctuation triggers to append (comma-separated).
 - `p7dMarkdownItLinebreak.cjkBreaks.spaceAfterPunctuationTargetsRemove` (default: `""`) Punctuation triggers to remove (comma-separated).
-- `p7dMarkdownItLinebreak.attrs.disable` (default: `false`) Disable markdown-it-attrs auto-registration.
 - `p7dMarkdownItLinebreak.strongJa.disable` (default: `false`) Disable markdown-it-strong-ja.
-- `p7dMarkdownItLinebreak.strongJa.disableDollarMath` (default: `false`) Disable inline `$...$` handling in strong/em processing.
-- `p7dMarkdownItLinebreak.strongJa.disallowMixed` (default: `false`) Disable mixed English emphasis when links/HTML/code/math appear (set `true` to match markdown-it behavior).
+- `p7dMarkdownItLinebreak.strongJa.mode` (default: `"default"`) Emphasis pairing mode: `"default"` (`"japanese-only"`), `"aggressive"`, or `"compatible"`.
+  - `"japanese-only"` (default via `"default"`): When a line contains Japanese (hiragana/katakana/kanji/fullwidth punctuation), the leading `**` pairs aggressively; English-only lines follow markdown-it pairing.
+  - `"aggressive"`: Always pair the leading `**` greedily, regardless of language.
+  - `"compatible"`: Match markdown-it pairing; leading `**` stays literal.
+  Note: Pairing scans `*`/`**` left-to-right. Japanese-first pairing can wrap punctuation/quotes (e.g. `「」`, `（` `）`) and mixed lines keep aggressive pairing in `"japanese-only"`; inline links/HTML/code spans are re-wrapped after pairing to avoid broken emphasis. Multiline or nested emphasis can differ from vanilla markdown-it (e.g. markdown-it may leave trailing `**`).
 
 Note: `spaceAfterPunctuationTargetsAdd/Remove` take effect only when `spaceAfterPunctuation` is not `"none"`.
 
@@ -121,7 +124,6 @@ VS Code の Markdown プレビューで改行と強調解析を調整します�
 
 - markdown-it-cjk-breaks-mod
 - markdown-it-strong-ja
-- markdown-it-attrs（他の拡張で登録されていない場合に自動登録）
 
 ### 例
 
@@ -147,13 +149,13 @@ HTMLは*「HyperText Markup Language」*の略です。
 string**[text](url)**
 ```
 
-strong-jaの出力（規定：disallowMixed: false）:
+strong-jaの出力（規定）:
 
 ```HTML
 <p>string<strong><a href="url">text</a></strong></p>
 ```
 
-markdown-it に合わせたい場合は `disallowMixed: true` を指定してください。
+markdown-it に合わせたい場合は `mode: "compatible"` を指定してください。
 
 ```HTML
 <p>string**<a href="url">text</a>**</p>
@@ -218,10 +220,12 @@ World
 - `p7dMarkdownItLinebreak.cjkBreaks.spaceAfterPunctuation` (既定: `"half"`) 抑制時に `"half"` / `"full"` の空白を挿入します。 `"none"` で無効化します。
 - `p7dMarkdownItLinebreak.cjkBreaks.spaceAfterPunctuationTargetsAdd` (既定: `""`) 追加する句読点トリガー（カンマ区切り）。
 - `p7dMarkdownItLinebreak.cjkBreaks.spaceAfterPunctuationTargetsRemove` (既定: `""`) 除外する句読点トリガー（カンマ区切り）。
-- `p7dMarkdownItLinebreak.attrs.disable` (既定: `false`) markdown-it-attrs の自動登録を無効化します。
 - `p7dMarkdownItLinebreak.strongJa.disable` (既定: `false`) markdown-it-strong-ja を無効化します。
-- `p7dMarkdownItLinebreak.strongJa.disableDollarMath` (既定: `false`) strong/em 内の `$...$` 処理を無効化します。
-- `p7dMarkdownItLinebreak.strongJa.disallowMixed` (既定: `false`) リンク/HTML/コード/数式を含む混在文での強調を無効化します（markdown-it に合わせるなら `true`）。
+- `p7dMarkdownItLinebreak.strongJa.mode` (既定: `"default"`) 強調のペアリングモード（`"default"` は `"japanese-only"`、`"aggressive"`、`"compatible"`）。
+  - `"japanese-only"`（`"default"` の既定）: 行に日本語（ひらがな/カタカナ/漢字/全角記号）が含まれる場合、先頭の `**` を強めにペアリングし、英語のみの行は markdown-it のペアリングに従います。
+  - `"aggressive"`: 言語に関係なく先頭の `**` を常に貪欲にペアリングします。
+  - `"compatible"`: markdown-it と同じペアリング（先頭の `**` は文字として残ります）。
+  補足: `*`/`**` は左からペアリングされます。日本語の括弧や句読点（`「」`、`（` `）` など）をまたいでペアリングされることがあり、`"japanese-only"` では混在文も日本語寄りで処理します。インラインのリンク/HTML/コードはペアリング後に再ラップされ、複数行/ネスト強調は markdown-it と挙動が異なる場合があります（末尾の `**` が残るなど）。
 
 補足: `spaceAfterPunctuationTargetsAdd/Remove` は `spaceAfterPunctuation` が `"none"` のときは無効です。
 
