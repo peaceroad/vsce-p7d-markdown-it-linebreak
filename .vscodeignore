@@ -3,7 +3,7 @@
 node_modules/**
 src/**
 extension.js
-esbuild.js
+build.js
 tsconfig.json
 .gitignore
 .vscodeignore

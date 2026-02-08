@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.2.2] - 2026-02-08
+
+Update dependencies:
+  - @peaceroad/markdown-it-cjk-breaks-mod@0.1.7
+  - @peaceroad/markdown-it-strong-ja@0.7.2
+
+- Fix:
+    - Treat strong-ja mode "default" as the plugin's "japanese".
+- Change:
+    - Clarify strong-ja mode description and add enum UI descriptions for selectable settings.
+
 ## [0.2.1] - 2026-01-18
 
 Update p7d-markdown-it-strong-ja@0.6.1

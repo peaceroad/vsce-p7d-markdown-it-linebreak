@@ -3,7 +3,7 @@ import cjkBreaks from '@peaceroad/markdown-it-cjk-breaks-mod'
 import strongJa from '@peaceroad/markdown-it-strong-ja'
 
 const CONFIG_SECTION = 'p7dMarkdownItLinebreak'
-const STRONG_JA_CORE_RULES = ['cjk_breaks', 'my_custom_rule']
+const STRONG_JA_CORE_RULES = ['cjk_breaks']
 
 const getBoolean = (config, key, fallback) => {
   const value = config.get(key)
@@ -101,10 +101,12 @@ const buildStrongJaOptions = (config) => {
     coreRulesBeforePostprocess: STRONG_JA_CORE_RULES,
   }
 
-  const modeRaw = config.get('strongJa.mode', 'default')
+  const modeRaw = config.get('strongJa.mode', 'japanese')
   if (typeof modeRaw === 'string') {
     const mode = modeRaw.toLowerCase()
-    if (mode === 'aggressive' || mode === 'compatible') {
+    if (mode === 'default' || mode === 'japanese' || mode === 'japanese-only') {
+      options.mode = 'japanese'
+    } else if (mode === 'aggressive' || mode === 'compatible') {
       options.mode = mode
     }
   }

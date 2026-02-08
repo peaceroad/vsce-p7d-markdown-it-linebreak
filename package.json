@@ -3,7 +3,7 @@
   "displayName": "p7d-markdown-it-linebreak-and-strong-ja",
   "description": "Adjust handling of line breaks and em/strong asterisk mark in japanese markdown preview html.",
   "license": "MIT",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "publisher": "peaceroad",
   "repository": {
     "url": "https://github.com/peaceroad/vsce-p7d-markdown-it-linebreak"
@@ -53,6 +53,11 @@
             "full",
             "none"
           ],
+          "enumDescriptions": [
+            "Insert a half-width (ASCII) space.",
+            "Insert a full-width (ideographic) space.",
+            "Disable punctuation spacing."
+          ],
           "default": "half",
           "description": "Insert space when suppressing line breaks after punctuation; use 'none' to disable."
         },
@@ -78,15 +83,20 @@
             "aggressive",
             "compatible"
           ],
+          "enumDescriptions": [
+            "Japanese-aware pairing (same as plugin 'japanese' default).",
+            "Always pair leading ** greedily.",
+            "Markdown-it compatible pairing."
+          ],
           "default": "default",
-          "description": "Emphasis pairing mode: default, aggressive, or compatible."
+          "description": "Emphasis pairing mode: default (japanese), aggressive, or compatible."
         }
       }
     }
   },
   "dependencies": {
-    "@peaceroad/markdown-it-cjk-breaks-mod": "^0.1.4",
-    "@peaceroad/markdown-it-strong-ja": "^0.6.1"
+    "@peaceroad/markdown-it-cjk-breaks-mod": "^0.1.7",
+    "@peaceroad/markdown-it-strong-ja": "^0.7.2"
   },
   "devDependencies": {
     "esbuild": "^0.27.2"
