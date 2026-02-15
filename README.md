@@ -108,11 +108,13 @@ To disable, set `p7dMarkdownItLinebreak.cjkBreaks.disableNormalizeSoftBreaks` to
 - `p7dMarkdownItLinebreak.cjkBreaks.spaceAfterPunctuationTargetsAdd` (default: `""`) Additional punctuation triggers to append (comma-separated).
 - `p7dMarkdownItLinebreak.cjkBreaks.spaceAfterPunctuationTargetsRemove` (default: `""`) Punctuation triggers to remove (comma-separated).
 - `p7dMarkdownItLinebreak.strongJa.disable` (default: `false`) Disable markdown-it-strong-ja.
-- `p7dMarkdownItLinebreak.strongJa.mode` (default: `"default"`) Emphasis pairing mode: `"default"` (`"japanese-only"`), `"aggressive"`, or `"compatible"`.
-  - `"japanese-only"` (default via `"default"`): When a line contains Japanese (hiragana/katakana/kanji/fullwidth punctuation), the leading `**` pairs aggressively; English-only lines follow markdown-it pairing.
-  - `"aggressive"`: Always pair the leading `**` greedily, regardless of language.
-  - `"compatible"`: Match markdown-it pairing; leading `**` stays literal.
-  Note: Pairing scans `*`/`**` left-to-right. Japanese-first pairing can wrap punctuation/quotes (e.g. `「」`, `（` `）`) and mixed lines keep aggressive pairing in `"japanese-only"`; inline links/HTML/code spans are re-wrapped after pairing to avoid broken emphasis. Multiline or nested emphasis can differ from vanilla markdown-it (e.g. markdown-it may leave trailing `**`).
+- `p7dMarkdownItLinebreak.strongJa.mode` (default: `"japanese-boundary-guard"`) Emphasis pairing mode: `"japanese-boundary-guard"`, `"japanese-boundary"`, `"aggressive"`, or `"compatible"`.
+  - `"japanese-boundary-guard"`: Baseline-first with a mixed JA/EN guard (recommended); suppresses emphasis for patterns like `* English*` in Japanese lines.
+  - `"japanese-boundary"`: Baseline-first without the mixed JA/EN guard; `* English*` may be emphasized.
+  - `"aggressive"`: More permissive recovery; may convert more malformed spans than baseline-first modes.
+  - `"compatible"`: Keep markdown-it pairing decisions; skips repairs around links/code and stays closest to markdown-it.
+  Note: Pairing scans `*`/`**` left-to-right. In modes other than `"compatible"`, inline links/HTML/code spans may be re-wrapped when safe, and multiline or nested emphasis can differ from vanilla markdown-it (e.g. markdown-it may leave trailing `**`).
+- `p7dMarkdownItLinebreak.strongJa.notUsingMarkdownItAttrsFeature` (default: `false`) Disable markdown-it-attrs integration (set `true` if you do not use markdown-it-attrs).
 
 Note: `spaceAfterPunctuationTargetsAdd/Remove` take effect only when `spaceAfterPunctuation` is not `"none"`.
 
@@ -221,11 +223,13 @@ World
 - `p7dMarkdownItLinebreak.cjkBreaks.spaceAfterPunctuationTargetsAdd` (既定: `""`) 追加する句読点トリガー（カンマ区切り）。
 - `p7dMarkdownItLinebreak.cjkBreaks.spaceAfterPunctuationTargetsRemove` (既定: `""`) 除外する句読点トリガー（カンマ区切り）。
 - `p7dMarkdownItLinebreak.strongJa.disable` (既定: `false`) markdown-it-strong-ja を無効化します。
-- `p7dMarkdownItLinebreak.strongJa.mode` (既定: `"default"`) 強調のペアリングモード（`"default"` は `"japanese-only"`、`"aggressive"`、`"compatible"`）。
-  - `"japanese-only"`（`"default"` の既定）: 行に日本語（ひらがな/カタカナ/漢字/全角記号）が含まれる場合、先頭の `**` を強めにペアリングし、英語のみの行は markdown-it のペアリングに従います。
-  - `"aggressive"`: 言語に関係なく先頭の `**` を常に貪欲にペアリングします。
-  - `"compatible"`: markdown-it と同じペアリング（先頭の `**` は文字として残ります）。
-  補足: `*`/`**` は左からペアリングされます。日本語の括弧や句読点（`「」`、`（` `）` など）をまたいでペアリングされることがあり、`"japanese-only"` では混在文も日本語寄りで処理します。インラインのリンク/HTML/コードはペアリング後に再ラップされ、複数行/ネスト強調は markdown-it と挙動が異なる場合があります（末尾の `**` が残るなど）。
+- `p7dMarkdownItLinebreak.strongJa.mode` (既定: `"japanese-boundary-guard"`) 強調のペアリングモード（`"japanese-boundary-guard"`、`"japanese-boundary"`、`"aggressive"`、`"compatible"`）。
+  - `"japanese-boundary-guard"`: ベースライン優先 + 混在文ガード（推奨）。日本語文中の `* English*` のような混在パターンは強調を抑制します。
+  - `"japanese-boundary"`: ベースライン優先（混在文ガードなし）。`* English*` が強調される場合があります。
+  - `"aggressive"`: 復元を優先し、崩れた入力でも強調しやすくなります。
+  - `"compatible"`: markdown-it のペアリング判断を尊重し、リンク/コード周辺の修復を行いません。
+  - 補足: `*`/`**` は左からペアリングされます。`"compatible"` 以外のモードでは、インラインのリンク/HTML/コードが安全な場合に再ラップされ、複数行/ネスト強調は markdown-it と挙動が異なる場合があります（末尾の `**` が残るなど）。
+- `p7dMarkdownItLinebreak.strongJa.notUsingMarkdownItAttrsFeature` (既定: `false`) markdown-it-attrs 連携を無効化します。使用しない場合は `true` にしてください。
 
 補足: `spaceAfterPunctuationTargetsAdd/Remove` は `spaceAfterPunctuation` が `"none"` のときは無効です。
 

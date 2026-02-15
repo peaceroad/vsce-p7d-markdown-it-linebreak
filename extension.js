@@ -4,6 +4,10 @@ import strongJa from '@peaceroad/markdown-it-strong-ja'
 
 const CONFIG_SECTION = 'p7dMarkdownItLinebreak'
 const STRONG_JA_CORE_RULES = ['cjk_breaks']
+const STRONG_JA_DEFAULT_MODE = 'japanese-boundary-guard'
+const STRONG_JA_DEFAULT_POSTPROCESS = true
+const STRONG_JA_DEFAULT_MDIT_ATTRS = true
+const STRONG_JA_DEFAULT_PATCH_CORE_PUSH = true
 
 const getBoolean = (config, key, fallback) => {
   const value = config.get(key)
@@ -99,17 +103,23 @@ const buildCjkBreaksOptions = (config) => {
 const buildStrongJaOptions = (config) => {
   const options = {
     coreRulesBeforePostprocess: STRONG_JA_CORE_RULES,
+    postprocess: STRONG_JA_DEFAULT_POSTPROCESS,
+    mditAttrs: STRONG_JA_DEFAULT_MDIT_ATTRS,
+    patchCorePush: STRONG_JA_DEFAULT_PATCH_CORE_PUSH,
   }
 
-  const modeRaw = config.get('strongJa.mode', 'japanese')
+  const modeRaw = config.get('strongJa.mode', STRONG_JA_DEFAULT_MODE)
   if (typeof modeRaw === 'string') {
     const mode = modeRaw.toLowerCase()
-    if (mode === 'default' || mode === 'japanese' || mode === 'japanese-only') {
-      options.mode = 'japanese'
+    if (mode === 'japanese-boundary' || mode === 'japanese-boundary-guard') {
+      options.mode = mode
     } else if (mode === 'aggressive' || mode === 'compatible') {
       options.mode = mode
     }
   }
+
+  const notUsingMditAttrs = getBoolean(config, 'strongJa.notUsingMarkdownItAttrsFeature', false)
+  options.mditAttrs = !notUsingMditAttrs
 
   return options
 }

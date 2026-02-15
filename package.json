@@ -3,7 +3,7 @@
   "displayName": "p7d-markdown-it-linebreak-and-strong-ja",
   "description": "Adjust handling of line breaks and em/strong asterisk mark in japanese markdown preview html.",
   "license": "MIT",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "publisher": "peaceroad",
   "repository": {
     "url": "https://github.com/peaceroad/vsce-p7d-markdown-it-linebreak"
@@ -79,24 +79,31 @@
         "p7dMarkdownItLinebreak.strongJa.mode": {
           "type": "string",
           "enum": [
-            "default",
+            "japanese-boundary-guard",
+            "japanese-boundary",
             "aggressive",
             "compatible"
           ],
           "enumDescriptions": [
-            "Japanese-aware pairing (same as plugin 'japanese' default).",
+            "Japanese boundary with mixed-text guard (default; japanese).",
+            "Japanese boundary without mixed-text guard.",
             "Always pair leading ** greedily.",
             "Markdown-it compatible pairing."
           ],
-          "default": "default",
-          "description": "Emphasis pairing mode: default (japanese), aggressive, or compatible."
+          "default": "japanese-boundary-guard",
+          "description": "Emphasis pairing mode: japanese-boundary-guard/japanese-boundary/aggressive/compatible."
+        },
+        "p7dMarkdownItLinebreak.strongJa.notUsingMarkdownItAttrsFeature": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable markdown-it-attrs integration (set true if you do not use markdown-it-attrs)."
         }
       }
     }
   },
   "dependencies": {
-    "@peaceroad/markdown-it-cjk-breaks-mod": "^0.1.7",
-    "@peaceroad/markdown-it-strong-ja": "^0.7.2"
+    "@peaceroad/markdown-it-cjk-breaks-mod": "^0.1.8",
+    "@peaceroad/markdown-it-strong-ja": "^0.8.0"
   },
   "devDependencies": {
     "esbuild": "^0.27.2"

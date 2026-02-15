@@ -1,5 +1,21 @@
 # Change Log
 
+## [0.3.0] - 2026-02-15
+
+Update dependencies:
+-  @peaceroad/markdown-it-strong-ja@0.8.0
+    - The default conversion behavior for paragraph processing when English text is mixed has been changed.
+    - The scope of Japanese context judgment has been changed from "the entire paragraph" to "the local context of each * (neighborhood on the same line)."
+    - Post-processing reparsing has been discontinued and repair has been switched to token manipulation only (conservative fail-closed).
+    - The available modes have been reorganized as follows:
+    - japanese-boundary: Provides local assistance only to * neighborhoods with Japanese context.
+        - japanese-boundary-guard: A mode that adds a guard to prevent over-conversion in mixed sentences. The actual form of the option japanese. Default.
+        - aggressive: A mode with the maximum amount of recovery, aggressively picking up emphasis at the beginning.
+        - compatible: Disables custom assistance and maintains the default behavior of markdown-it.
+- @peaceroad/markdown-it-cjk-breaks-mod@0.1.8
+   - Tuning.
+
+
 ## [0.2.2] - 2026-02-08
 
 Update dependencies:
