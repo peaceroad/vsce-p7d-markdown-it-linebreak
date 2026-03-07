@@ -3,11 +3,14 @@ import cjkBreaks from '@peaceroad/markdown-it-cjk-breaks-mod'
 import strongJa from '@peaceroad/markdown-it-strong-ja'
 
 const CONFIG_SECTION = 'p7dMarkdownItLinebreak'
+const MARKDOWN_RELOAD_PLUGINS_COMMAND = 'markdown.api.reloadPlugins'
 const STRONG_JA_CORE_RULES = ['cjk_breaks']
 const STRONG_JA_DEFAULT_MODE = 'japanese-boundary-guard'
 const STRONG_JA_DEFAULT_POSTPROCESS = true
 const STRONG_JA_DEFAULT_MDIT_ATTRS = true
 const STRONG_JA_DEFAULT_PATCH_CORE_PUSH = true
+
+let reloadMarkdownPluginsPromise = null
 
 const getBoolean = (config, key, fallback) => {
   const value = config.get(key)
@@ -124,7 +127,33 @@ const buildStrongJaOptions = (config) => {
   return options
 }
 
+const reloadMarkdownPlugins = async () => {
+  if (reloadMarkdownPluginsPromise) return reloadMarkdownPluginsPromise
+
+  reloadMarkdownPluginsPromise = (async () => {
+    try {
+      await vscode.commands.executeCommand(MARKDOWN_RELOAD_PLUGINS_COMMAND)
+    } catch (error) {
+      console.warn(
+        '[p7dMarkdownItLinebreak] Failed to reload Markdown preview plugins after configuration change.',
+        error
+      )
+    } finally {
+      reloadMarkdownPluginsPromise = null
+    }
+  })()
+
+  return reloadMarkdownPluginsPromise
+}
+
 export const activate = async (context) => {
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration((event) => {
+      if (!event.affectsConfiguration(CONFIG_SECTION)) return
+      void reloadMarkdownPlugins()
+    })
+  )
+
   return {
     extendMarkdownIt(md) {
       const config = vscode.workspace.getConfiguration(CONFIG_SECTION)
