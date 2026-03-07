@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.3.1] - 2026-03-07
+
+- Fix:
+    - Reload Markdown preview plugins automatically when `p7dMarkdownItLinebreak.*` settings change.
+- Change:
+    - Run `npm run build` automatically during `vsce package` / publish via `vscode:prepublish`.
+
 ## [0.3.0] - 2026-02-15
 
 Update dependencies:
