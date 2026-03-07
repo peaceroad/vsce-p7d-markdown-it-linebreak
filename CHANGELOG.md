@@ -2,6 +2,10 @@
 
 ## [0.3.1] - 2026-03-07
 
+- Update dependencies:
+  - @peaceroad/markdown-it-cjk-breaks-mod@0.1.9
+  - @peaceroad/markdown-it-strong-ja@0.8.1
+     - Fix  `[w](https://example.com) *string* [w](https://example.com)`
 - Fix:
     - Reload Markdown preview plugins automatically when `p7dMarkdownItLinebreak.*` settings change.
 - Change:
